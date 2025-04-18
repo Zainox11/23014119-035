@@ -1,0 +1,243 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Circular', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.signup-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 32px;
+    background-color: #121212;
+    border-radius: 8px;
+    display: none; /* Hidden by default */
+}
+.signup-container.active {
+    display: block;
+}
+h1 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+.step-indicator {
+    text-align: center;
+    color: #a7a7a7;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+/* Common Form Elements */
+.form-group {
+    margin-bottom: 16px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    background-color: #121212;
+    border: 1px solid #535353;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+.form-group input:focus {
+    border-color: #fff;
+    outline: none;
+}
+.info-text {
+    color: #a7a7a7;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.info-link {
+    color: #1ed760;
+    text-decoration: none;
+}
+
+/* Buttons */
+.next-btn, .signup-btn {
+    width: 100%;
+    padding: 14px;
+    margin: 24px 0;
+    background-color: #1ed760;
+    color: #000;
+    border: none;
+    border-radius: 500px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.next-btn:hover, .signup-btn:hover {
+    transform: scale(1.02);
+}
+
+/* Password Requirements */
+.password-requirements {
+    margin: 16px 0;
+    color: #a7a7a7;
+    font-size: 12px;
+}
+.requirement {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.requirement input[type="checkbox"] {
+    margin-right: 8px;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #535353;
+    border-radius: 2px;
+    position: relative;
+}
+.requirement input[type="checkbox"]:checked::before {
+    content: "✓";
+    position: absolute;
+    color: #1ed760;
+    left: 2px;
+}
+
+/* Date of Birth Fields */
+.dob-fields {
+    display: flex;
+    gap: 8px;
+}
+.dob-fields input {
+    text-align: center;
+}
+.dob-fields input#day {
+    width: 60px;
+}
+.dob-fields input#year {
+    width: 80px;
+}
+.dob-fields select {
+    flex: 1;
+    padding: 14px;
+    background-color: #121212;
+    border: 1px solid #535353;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Gender Options */
+.gender-options {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+.gender-option {
+    display: flex;
+    align-items: center;
+}
+.gender-option input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* Terms & Conditions */
+.terms-container {
+    margin: 24px 0;
+}
+.term-item {
+    display: flex;
+    margin-bottom: 16px;
+}
+.term-item input[type="checkbox"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+}
+.term-text {
+    font-size: 14px;
+    color: #fff;
+}
+.policy-links {
+    margin: 24px 0;
+    font-size: 12px;
+    color: #a7a7a7;
+}
+.policy-links a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Legal Text */
+.legal-text {
+    font-size: 11px;
+    color: #a7a7a7;
+    text-align: center;
+    line-height: 1.5;
+}
+.legal-text a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Social Login */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    color: #535353;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #535353;
+}
+.divider::before {
+    margin-right: 16px;
+}
+.divider::after {
+    margin-left: 16px;
+}
+.social-login {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 1px solid #535353;
+    border-radius: 500px;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+}
+.social-btn i {
+    position: absolute;
+    left: 16px;
+    font-size: 20px;
+}
+.login-link {
+    text-align: center;
+    color: #a7a7a7;
+    margin-bottom: 24px;
+}
+.login-link a {
+    color: #fff;
+    text-decoration: none;
+}

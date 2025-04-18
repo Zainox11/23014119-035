@@ -1,0 +1,126 @@
+/* Login Section CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Circular', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 32px;
+    background-color: #121212;
+    border-radius: 8px;
+}
+h1 {
+    font-size: 32px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+.social-login {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 1px solid #535353;
+    border-radius: 500px;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+}
+.social-btn i {
+    position: absolute;
+    left: 16px;
+    font-size: 20px;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 32px 0;
+    color: #535353;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #535353;
+}
+.divider::before {
+    margin-right: 16px;
+}
+.divider::after {
+    margin-left: 16px;
+}
+.form-group {
+    margin-bottom: 16px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    background-color: #121212;
+    border: 1px solid #535353;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+.form-group input:focus {
+    border-color: #fff;
+    outline: none;
+}
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    margin: 32px 0;
+    background-color: #1ed760;
+    color: #000;
+    border: none;
+    border-radius: 500px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+.login-btn:hover {
+    transform: scale(1.02);
+}
+.forgot-password {
+    display: block;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    margin-bottom: 32px;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+.signup-link {
+    text-align: center;
+    color: #a7a7a7;
+}
+.signup-link a {
+    color: #fff;
+    text-decoration: none;
+}
+.signup-link a:hover {
+    text-decoration: underline;
+}

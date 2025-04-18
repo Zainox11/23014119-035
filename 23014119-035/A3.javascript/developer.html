@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify for Developers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="Javascript/utilities.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Circular:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Circular', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-theme {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .light-theme {
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #1DB954;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <!-- Header with Mobile Menu -->
+    <header class="bg-black py-4 px-8 border-b border-gray-800 flex justify-between items-center sticky top-0 z-50">
+        <div class="text-3xl font-bold text-spotify-green">Spotify for Developers</div>
+
+        <!-- Mobile menu button -->
+        <button id="mobileMenuButton" class="md:hidden text-white text-2xl focus:outline-none">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="mobileMenu"
+            class="hidden md:block absolute md:relative top-full left-0 w-full md:w-auto bg-black md:bg-transparent z-10 border-b md:border-0 border-gray-800 md:border-none transition-all duration-300">
+            <ul class="flex flex-col md:flex-row items-center py-4 md:py-0 space-y-4 md:space-y-0 md:space-x-6">
+                <li><a href="#" class="text-white hover:text-spotify-green font-medium">Documentation</a></li>
+                <li><a href="#" class="text-white hover:text-spotify-green font-medium">Web API</a></li>
+                <li><a href="#" class="text-white hover:text-spotify-green font-medium">SDKs</a></li>
+                <li><a href="#" class="text-white hover:text-spotify-green font-medium">Community</a></li>
+                <li><button id="theme-toggle" class="text-white hover:text-spotify-green font-medium">Toggle
+                        Theme</button></li>
+                <li><a href="login.html"
+                        class="bg-spotify-green text-black px-4 py-2 rounded-full font-bold hover:bg-spotify-green-dark">Log
+                        In</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 px-8 bg-gradient-to-b from-black to-gray-900 bg-cover bg-center"
+        style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://developer.spotify.com/assets/home/hero-bg.jpg')">
+        <h1 class="text-5xl font-bold mb-4">Build with Spotify</h1>
+        <p class="text-xl max-w-2xl mx-auto mb-8">Integrate Spotify's music and podcast platform into your apps,
+            devices, and experiences.</p>
+        <button id="getStartedBtn"
+            class="bg-spotify-green text-black px-8 py-3 rounded-full font-bold text-lg hover:bg-spotify-green-dark transition-colors">Get
+            Started</button>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 px-8 text-center">
+        <h2 class="text-4xl font-bold mb-12">What Can You Build?</h2>
+        <div class="flex flex-wrap justify-center gap-8">
+            <div
+                class="feature-card bg-gray-900 rounded-xl p-8 text-left max-w-xs transition-all duration-300 cursor-pointer">
+                <i class="fas fa-music text-spotify-green text-4xl mb-4"></i>
+                <h3 class="text-2xl font-bold mb-4">Music Apps</h3>
+                <p>Create apps that let users discover and play music from Spotify's vast library.</p>
+            </div>
+            <div
+                class="feature-card bg-gray-900 rounded-xl p-8 text-left max-w-xs transition-all duration-300 cursor-pointer">
+                <i class="fas fa-podcast text-spotify-green text-4xl mb-4"></i>
+                <h3 class="text-2xl font-bold mb-4">Podcast Tools</h3>
+                <p>Build tools for podcast creators and listeners with our Podcast API.</p>
+            </div>
+            <div
+                class="feature-card bg-gray-900 rounded-xl p-8 text-left max-w-xs transition-all duration-300 cursor-pointer">
+                <i class="fas fa-robot text-spotify-green text-4xl mb-4"></i>
+                <h3 class="text-2xl font-bold mb-4">Voice Integrations</h3>
+                <p>Enable voice control for Spotify in your smart devices.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="py-8 px-8 bg-gray-900">
+        <div class="max-w-2xl mx-auto">
+            <form id="searchForm" class="flex">
+                <input type="text" id="searchInput" placeholder="Search the documentation..."
+                    class="flex-grow px-4 py-2 rounded-l-lg focus:outline-none text-black">
+                <button type="submit"
+                    class="bg-spotify-green text-black px-6 py-2 rounded-r-lg font-bold hover:bg-spotify-green-dark transition-colors">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-12 px-8 text-center">
+        <div class="flex flex-wrap justify-center gap-8 mb-8">
+            <a href="#" class="text-white hover:text-spotify-green">Terms & Conditions</a>
+            <a href="#" class="text-white hover:text-spotify-green">Privacy Policy</a>
+            <a href="#" class="text-white hover:text-spotify-green">Cookies</a>
+            <a href="about.html" class="text-white hover:text-spotify-green">About</a>
+        </div>
+        <div class="flex justify-center space-x-6 mb-8">
+            <a href="#" class="text-white text-2xl hover:text-spotify-green"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-white text-2xl hover:text-spotify-green"><i class="fab fa-github"></i></a>
+            <a href="#" class="text-white text-2xl hover:text-spotify-green"><i class="fab fa-discord"></i></a>
+        </div>
+        <p class="text-gray-500">© <span id="currentYear"></span> Spotify AB</p>
+    </footer>
+
+    <!-- Loading Spinner (hidden by default) -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Tailwind config for Spotify green -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1DB954',
+                        'spotify-green-dark': '#1aa34a',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- JavaScript for interactive elements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function () {
+                    mobileMenu.classList.toggle('hidden');
+
+                    // Change icon between bars and times (X)
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        if (mobileMenu.classList.contains('hidden')) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        } else {
+                            icon.classList.remove('fa-bars');
+                            icon.classList.add('fa-times');
+                        }
+                    }
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!mobileMenu.contains(e.target) &&
+                        !mobileMenuButton.contains(e.target) &&
+                        !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        const icon = mobileMenuButton.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                });
+            }
+
+            // Theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function () {
+                    document.body.classList.toggle('dark-theme');
+                    document.body.classList.toggle('light-theme');
+                    const isLight = document.body.classList.contains('light-theme');
+                    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                });
+
+                // Check for saved theme preference
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-theme');
+                    document.body.classList.remove('dark-theme');
+                }
+            }
+
+            // Get Started button with loading spinner
+            const getStartedBtn = document.getElementById('getStartedBtn');
+            if (getStartedBtn) {
+                getStartedBtn.addEventListener('click', function () {
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                        alert('Redirecting to developer documentation...');
+                        window.location.href = '#';
+                    }, 1500);
+                });
+            }
+
+            // Feature card hover effects
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                    this.classList.add('card-hover');
+                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+                    this.style.transform = 'translateY(-5px)';
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    this.classList.remove('card-hover');
+                    this.style.boxShadow = '';
+                    this.style.transform = '';
+                });
+
+                card.addEventListener('click', function () {
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                        const title = this.querySelector('h3').textContent;
+                        alert(`Learn more about ${title}`);
+                    }, 1000);
+                });
+            });
+
+            // Search form
+            const searchForm = document.getElementById('searchForm');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const query = document.getElementById('searchInput').value.trim();
+                    if (query) {
+                        showLoading();
+                        setTimeout(() => {
+                            hideLoading();
+                            alert(`Searching for: ${query}\n(Simulated search functionality)`);
+                        }, 1000);
+                    }
+                });
+            }
+
+            // Loading spinner functions
+            function showLoading() {
+                document.getElementById('loadingSpinner').classList.remove('hidden');
+            }
+
+            function hideLoading() {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up for Spotify</title>
+    <link rel="icon" href="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="index.html">
+    <link rel="stylesheet" href="StyleFolder/signup.css">
+</head>
+<body>
+    <!-- Step 1: Email -->
+    <div class="signup-container active" id="step1">
+        <h1>Sign up to start listening</h1>
+        
+        <form id="emailForm">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" placeholder="name@domain.com" required>
+            </div>
+            
+            <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
+        </form>
+        
+        <div class="divider">or</div>
+        
+        <div class="social-login">
+            <a href="#" class="social-btn">
+                <i class="fab fa-google"></i>
+                Sign up with Google
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-facebook"></i>
+                Sign up with Facebook
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-apple"></i>
+                Sign up with Apple
+            </a>
+        </div>
+        
+        <div class="login-link">
+            Already have an account? <a href="login.html">Log in here.</a>
+        </div>
+        
+        <div class="legal-text">
+            This site is protected by reCAPTCHA and the Google 
+            <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.
+        </div>
+    </div>
+    
+    <!-- Step 2: Password -->
+    <div class="signup-container" id="step2">
+        <div class="step-indicator">Step 1 of 3</div>
+        <h1>Create a password</h1>
+        
+        <form id="passwordForm">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" oninput="validatePassword()" placeholder="Enter a Strong Password" required>
+            </div>
+            
+            <div class="password-requirements">
+                <p>Your password must contain at least</p>
+                <div class="requirement">
+                    <input type="checkbox" id="length" disabled>
+                    <label for="length">8 characters</label>
+                </div>
+                <div class="requirement">
+                    <input type="checkbox" id="special" disabled>
+                    <label for="special">1 number or special character</label>
+                </div>
+                <div class="requirement">
+                    <input type="checkbox" id="case" disabled>
+                    <label for="case">Both uppercase and lowercase letters</label>
+                </div>
+            </div>
+            
+            <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
+        </form>
+        
+        <div class="legal-text">
+            This info is protected by reCAPTCHA and the Google 
+            <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.
+        </div>
+    </div>
+    
+    <!-- Step 3: Profile -->
+    <div class="signup-container" id="step3">
+        <div class="step-indicator">Step 2 of 3</div>
+        <h1>Tell us about yourself</h1>
+        
+        <form id="profileForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name">
+                <p class="info-text">This name will appear on your profile</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="dob">Date of birth</label>
+                <div class="dob-fields">
+                    <input type="text" id="day" placeholder="dd" maxlength="2">
+                    <select id="month">
+                        <option value="">Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <input type="text" id="year" placeholder="yyyy" maxlength="4">
+                </div>
+                <p class="info-text">
+                    Why do we need your date of birth? <a href="#" class="info-link">Learn more</a>
+                </p>
+            </div>
+            
+            <div class="form-group">
+                <label>Gender</label>
+                <p class="info-text">
+                    We use your gender to help personalize our content recommendations and ads for you.
+                </p>
+                <div class="gender-options">
+                    <div class="gender-option">
+                        <input type="radio" id="male" name="gender" value="male">
+                        <label for="male">Man</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="female" name="gender" value="female">
+                        <label for="female">Woman</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="other" name="gender" value="other">
+                        <label for="other">Prefer not to say</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="next-btn" onclick="nextStep(4)">Next</button>
+        </form>
+        
+        <div class="legal-text">
+            This info is protected by reCAPTCHA and the Google 
+            <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.
+        </div>
+    </div>
+    
+    <!-- Step 4: Terms -->
+    <div class="signup-container" id="step4">
+        <div class="step-indicator">Step 3 of 3</div>
+        <h1>Terms & Conditions</h1>
+        
+        <form id="termsForm">
+            <div class="terms-container">
+                <div class="term-item">
+                    <input type="checkbox" id="marketing" name="marketing">
+                    <label for="marketing" class="term-text">
+                        I would prefer not to receive marketing messages from Spotify.
+                    </label>
+                </div>
+                <div class="term-item">
+                    <input type="checkbox" id="data-sharing" name="data-sharing">
+                    <label for="data-sharing" class="term-text">
+                        Share my registration data with Spotify's content providers for marketing purposes.
+                    </label>
+                </div>
+            </div>
+            
+            <p class="term-text">
+                By clicking on sign-up, you agree to Spotify's Terms and Conditions of Use.
+            </p>
+            
+            <div class="policy-links">
+                To learn more about how Spotify collects, uses, shares and protects your personal data, 
+                please see Spotify's <a href="#">Privacy Policy</a>.
+            </div>
+            
+            <button type="button" class="signup-btn" onclick="submitForm()">Sign up</button>
+        </form>
+        
+        <div class="legal-text">
+            This info is protected by reCAPTCHA and the Google 
+            <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.
+        </div>
+    </div>
+
+    <script>
+        function nextStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.signup-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Show the requested step
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+        
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            
+            // Check length requirement
+            document.getElementById('length').checked = password.length >= 8;
+            
+            // Check for special character or number
+            document.getElementById('special').checked = /[0-9!@#$%^&*]/.test(password);
+            
+            // Check for both uppercase and lowercase
+            document.getElementById('case').checked = /[A-Z]/.test(password) && /[a-z]/.test(password);
+        }
+        
+        function submitForm() {
+            // Here you would normally submit the form data to your server
+            alert('Account created successfully!');
+            // Redirect to login or home page
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

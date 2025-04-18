@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up for Spotify</title>
+    <link rel="icon" href="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1ed760',
+                        'spotify-dark': '#121212',
+                        'spotify-gray': '#535353',
+                        'spotify-light-gray': '#a7a7a7',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .custom-checkbox input[type="checkbox"] {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border: 1px solid #535353;
+                border-radius: 2px;
+                position: relative;
+                margin-right: 8px;
+            }
+            .custom-checkbox input[type="checkbox"]:checked::before {
+                content: "✓";
+                position: absolute;
+                color: #1ed760;
+                left: 2px;
+            }
+            .divider {
+                display: flex;
+                align-items: center;
+                color: #535353;
+            }
+            .divider::before, .divider::after {
+                content: "";
+                flex: 1;
+                border-bottom: 1px solid #535353;
+            }
+            .divider::before {
+                margin-right: 16px;
+            }
+            .divider::after {
+                margin-left: 16px;
+            }
+            .signup-container {
+                display: none;
+            }
+            .signup-container.active {
+                display: block;
+            }
+            .error-message {
+                color: #ff4d4d;
+                font-size: 12px;
+                margin-top: 4px;
+            }
+            .error-border {
+                border-color: #ff4d4d !important;
+            }
+            .loading-spinner {
+                display: none;
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(255,255,255,.3);
+                border-radius: 50%;
+                border-top-color: #1ed760;
+                animation: spin 1s ease-in-out infinite;
+                margin-left: 8px;
+            }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white flex justify-center items-center min-h-screen font-sans p-4">
+    <!-- Step 1: Email -->
+    <div class="signup-container active w-full max-w-[450px] p-6 sm:p-8 bg-spotify-dark rounded-lg" id="step1">
+        <h1 class="text-2xl mb-6 text-center">Sign up to start listening</h1>
+
+        <form id="emailForm">
+            <div class="form-group mb-4">
+                <label for="email" class="block mb-2 font-bold text-sm">Email address</label>
+                <input type="email" id="email" name="email" placeholder="name@domain.com" required
+                    class="w-full p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white focus:border-white focus:outline-none">
+                <div id="emailError" class="error-message"></div>
+            </div>
+
+            <button type="button"
+                class="next-btn w-full p-3.5 my-6 bg-spotify-green text-black border-none rounded-full font-bold text-base cursor-pointer transition-transform hover:scale-[1.02] flex items-center justify-center"
+                onclick="validateEmailStep(event)">
+                Next
+                <div id="step1-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <div class="divider my-6">or</div>
+
+        <div class="social-login flex flex-col gap-4 mb-6">
+            <a href="#"
+                class="social-btn flex items-center justify-center p-3 border border-spotify-gray rounded-full text-white font-bold no-underline relative">
+                <i class="fab fa-google absolute left-4 text-xl"></i>
+                Sign up with Google
+            </a>
+            <a href="#"
+                class="social-btn flex items-center justify-center p-3 border border-spotify-gray rounded-full text-white font-bold no-underline relative">
+                <i class="fab fa-facebook absolute left-4 text-xl"></i>
+                Sign up with Facebook
+            </a>
+            <a href="#"
+                class="social-btn flex items-center justify-center p-3 border border-spotify-gray rounded-full text-white font-bold no-underline relative">
+                <i class="fab fa-apple absolute left-4 text-xl"></i>
+                Sign up with Apple
+            </a>
+        </div>
+
+        <div class="login-link text-center text-spotify-light-gray mb-6">
+            Already have an account? <a href="login.html" class="text-white no-underline hover:underline">Log in here.</a>
+        </div>
+
+        <div class="legal-text text-[11px] text-spotify-light-gray text-center leading-6">
+            This site is protected by reCAPTCHA and the Google
+            <a href="#" class="text-white no-underline hover:underline">Privacy Policy</a> and <a href="#"
+                class="text-white no-underline hover:underline">Terms of Service</a> apply.
+        </div>
+    </div>
+
+    <!-- Step 2: Password -->
+    <div class="signup-container w-full max-w-[450px] p-6 sm:p-8 bg-spotify-dark rounded-lg" id="step2">
+        <button class="text-spotify-light-gray mb-4 flex items-center" onclick="prevStep(1)">
+            <i class="fas fa-chevron-left mr-2"></i> Back
+        </button>
+        <div class="step-indicator text-center text-spotify-light-gray text-sm mb-4">Step 1 of 3</div>
+        <h1 class="text-2xl mb-6 text-center">Create a password</h1>
+
+        <form id="passwordForm">
+            <div class="form-group mb-4">
+                <label for="password" class="block mb-2 font-bold text-sm">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" oninput="validatePassword()"
+                        placeholder="Enter a Strong Password" required
+                        class="w-full p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white focus:border-white focus:outline-none">
+                    <i class="fas fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        onclick="togglePasswordVisibility('password', this)"></i>
+                </div>
+                <div id="passwordError" class="error-message"></div>
+            </div>
+
+            <div class="password-requirements my-4 text-spotify-light-gray text-xs">
+                <p>Your password must contain at least</p>
+                <div class="requirement flex items-center mb-2 custom-checkbox">
+                    <input type="checkbox" id="length" disabled>
+                    <label for="length">8 characters</label>
+                </div>
+                <div class="requirement flex items-center mb-2 custom-checkbox">
+                    <input type="checkbox" id="special" disabled>
+                    <label for="special">1 number or special character</label>
+                </div>
+                <div class="requirement flex items-center mb-2 custom-checkbox">
+                    <input type="checkbox" id="case" disabled>
+                    <label for="case">Both uppercase and lowercase letters</label>
+                </div>
+            </div>
+
+            <button type="button"
+                class="next-btn w-full p-3.5 my-6 bg-spotify-green text-black border-none rounded-full font-bold text-base cursor-pointer transition-transform hover:scale-[1.02] flex items-center justify-center"
+                onclick="validatePasswordStep(event)">
+                Next
+                <div id="step2-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <div class="legal-text text-[11px] text-spotify-light-gray text-center leading-6">
+            This info is protected by reCAPTCHA and the Google
+            <a href="#" class="text-white no-underline hover:underline">Privacy Policy</a> and <a href="#"
+                class="text-white no-underline hover:underline">Terms of Service</a> apply.
+        </div>
+    </div>
+
+    <!-- Step 3: Profile -->
+    <div class="signup-container w-full max-w-[450px] p-6 sm:p-8 bg-spotify-dark rounded-lg" id="step3">
+        <button class="text-spotify-light-gray mb-4 flex items-center" onclick="prevStep(2)">
+            <i class="fas fa-chevron-left mr-2"></i> Back
+        </button>
+        <div class="step-indicator text-center text-spotify-light-gray text-sm mb-4">Step 2 of 3</div>
+        <h1 class="text-2xl mb-6 text-center">Tell us about yourself</h1>
+
+        <form id="profileForm">
+            <div class="form-group mb-4">
+                <label for="name" class="block mb-2 font-bold text-sm">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required
+                    class="w-full p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white focus:border-white focus:outline-none">
+                <div id="nameError" class="error-message"></div>
+                <p class="info-text text-spotify-light-gray text-xs mt-1">This name will appear on your profile</p>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="dob" class="block mb-2 font-bold text-sm">Date of birth</label>
+                <div class="dob-fields flex gap-2">
+                    <input type="number" id="day" placeholder="dd" min="1" max="31" required
+                        class="w-[60px] p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white text-center focus:border-white focus:outline-none">
+                    <select id="month" required
+                        class="flex-1 p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white focus:border-white focus:outline-none">
+                        <option value="">Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <input type="number" id="year" placeholder="yyyy" min="1900" max="2025" required
+                        class="w-[80px] p-3.5 bg-spotify-dark border border-spotify-gray rounded text-base text-white text-center focus:border-white focus:outline-none">
+                </div>
+                <div id="dobError" class="error-message"></div>
+                <p class="info-text text-spotify-light-gray text-xs mt-1">
+                    Why do we need your date of birth? <a href="#"
+                        class="info-link text-spotify-green no-underline hover:underline">Learn more</a>
+                </p>
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="block mb-2 font-bold text-sm">Gender</label>
+                <p class="info-text text-spotify-light-gray text-xs mt-1">
+                    We use your gender to help personalize our content recommendations and ads for you.
+                </p>
+                <div class="gender-options flex flex-col sm:flex-row gap-4 mt-2">
+                    <div class="gender-option flex items-center">
+                        <input type="radio" id="male" name="gender" value="male" class="mr-2" required>
+                        <label for="male">Man</label>
+                    </div>
+                    <div class="gender-option flex items-center">
+                        <input type="radio" id="female" name="gender" value="female" class="mr-2">
+                        <label for="female">Woman</label>
+                    </div>
+                    <div class="gender-option flex items-center">
+                        <input type="radio" id="other" name="gender" value="other" class="mr-2">
+                        <label for="other">Prefer not to say</label>
+                    </div>
+                </div>
+                <div id="genderError" class="error-message"></div>
+            </div>
+
+            <button type="button"
+                class="next-btn w-full p-3.5 my-6 bg-spotify-green text-black border-none rounded-full font-bold text-base cursor-pointer transition-transform hover:scale-[1.02] flex items-center justify-center"
+                onclick="validateProfileStep(event)">
+                Next
+                <div id="step3-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <div class="legal-text text-[11px] text-spotify-light-gray text-center leading-6">
+            This info is protected by reCAPTCHA and the Google
+            <a href="#" class="text-white no-underline hover:underline">Privacy Policy</a> and <a href="#"
+                class="text-white no-underline hover:underline">Terms of Service</a> apply.
+        </div>
+    </div>
+
+    <!-- Step 4: Terms -->
+    <div class="signup-container w-full max-w-[450px] p-6 sm:p-8 bg-spotify-dark rounded-lg" id="step4">
+        <button class="text-spotify-light-gray mb-4 flex items-center" onclick="prevStep(3)">
+            <i class="fas fa-chevron-left mr-2"></i> Back
+        </button>
+        <div class="step-indicator text-center text-spotify-light-gray text-sm mb-4">Step 3 of 3</div>
+        <h1 class="text-2xl mb-6 text-center">Terms & Conditions</h1>
+
+        <form id="termsForm">
+            <div class="terms-container my-6">
+                <div class="term-item flex mb-4">
+                    <input type="checkbox" id="marketing" name="marketing" class="mr-3 w-5 h-5">
+                    <label for="marketing" class="term-text text-sm text-white">
+                        I would prefer not to receive marketing messages from Spotify.
+                    </label>
+                </div>
+                <div class="term-item flex mb-4">
+                    <input type="checkbox" id="data-sharing" name="data-sharing" class="mr-3 w-5 h-5">
+                    <label for="data-sharing" class="term-text text-sm text-white">
+                        Share my registration data with Spotify's content providers for marketing purposes.
+                    </label>
+                </div>
+            </div>
+
+            <p class="term-text text-sm text-white">
+                By clicking on sign-up, you agree to Spotify's Terms and Conditions of Use.
+            </p>
+
+            <div class="policy-links my-6 text-xs text-spotify-light-gray">
+                To learn more about how Spotify collects, uses, shares and protects your personal data,
+                please see Spotify's <a href="#" class="text-white no-underline hover:underline">Privacy Policy</a>.
+            </div>
+
+            <button type="button"
+                class="signup-btn w-full p-3.5 my-6 bg-spotify-green text-black border-none rounded-full font-bold text-base cursor-pointer transition-transform hover:scale-[1.02] flex items-center justify-center"
+                onclick="submitForm()">
+                Sign up
+                <div id="step4-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <div class="legal-text text-[11px] text-spotify-light-gray text-center leading-6">
+            This info is protected by reCAPTCHA and the Google
+            <a href="#" class="text-white no-underline hover:underline">Privacy Policy</a> and <a href="#"
+                class="text-white no-underline hover:underline">Terms of Service</a> apply.
+        </div>
+    </div>
+
+    <script>
+        // Function to navigate between steps
+        function nextStep(step) {
+            console.log('Moving to step', step);
+            // Hide all steps
+            document.querySelectorAll('.signup-container').forEach(container => {
+                container.classList.remove('active');
+            });
+
+            // Show the requested step
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update step indicators
+            updateStepIndicators(step);
+            
+            // Scroll to top of form
+            window.scrollTo(0, 0);
+        }
+
+        // Function to go back to previous step
+        function prevStep(step) {
+            nextStep(step);
+        }
+
+        // Function to update step indicators
+        function updateStepIndicators(currentStep) {
+            const indicators = document.querySelectorAll('.step-indicator');
+            indicators.forEach(indicator => {
+                if (currentStep === 4) {
+                    indicator.textContent = 'Step 3 of 3';
+                } else if (currentStep > 1) {
+                    indicator.textContent = `Step ${currentStep - 1} of 3`;
+                }
+            });
+        }
+
+        // Function to validate email step
+        function validateEmailStep(event) {
+            event.preventDefault();
+            console.log('Validating email step');
+            
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            let isValid = true;
+
+            // Reset error state
+            emailInput.classList.remove('error-border');
+            emailError.textContent = '';
+
+            // Validate email
+            if (!emailInput.value) {
+                emailInput.classList.add('error-border');
+                emailError.textContent = 'Please enter your email address';
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                emailInput.classList.add('error-border');
+                emailError.textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+
+            if (isValid) {
+                document.getElementById('step1-spinner').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('step1-spinner').style.display = 'none';
+                    nextStep(2);
+                }, 800);
+            }
+        }
+
+        // Function to validate password requirements
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            
+            // Check length requirement
+            document.getElementById('length').checked = password.length >= 8;
+            
+            // Check for special character or number
+            document.getElementById('special').checked = /[0-9!@#$%^&*]/.test(password);
+            
+            // Check for both uppercase and lowercase
+            document.getElementById('case').checked = /[A-Z]/.test(password) && /[a-z]/.test(password);
+        }
+
+        // Function to validate password step
+        function validatePasswordStep(event) {
+            event.preventDefault();
+            console.log('Validating password step');
+            
+            const passwordInput = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+            let isValid = true;
+
+            // Reset error state
+            passwordInput.classList.remove('error-border');
+            passwordError.textContent = '';
+
+            // Validate password
+            if (!passwordInput.value) {
+                passwordInput.classList.add('error-border');
+                passwordError.textContent = 'Please enter a password';
+                isValid = false;
+            } else {
+                // Check password requirements
+                const hasLength = passwordInput.value.length >= 8;
+                const hasSpecial = /[0-9!@#$%^&*]/.test(passwordInput.value);
+                const hasCase = /[A-Z]/.test(passwordInput.value) && /[a-z]/.test(passwordInput.value);
+
+                if (!hasLength || !hasSpecial || !hasCase) {
+                    passwordInput.classList.add('error-border');
+                    passwordError.textContent = 'Your password must meet all requirements';
+                    isValid = false;
+                }
+            }
+
+            if (isValid) {
+                document.getElementById('step2-spinner').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('step2-spinner').style.display = 'none';
+                    nextStep(3);
+                }, 800);
+            }
+        }
+
+        // Function to toggle password visibility
+        function togglePasswordVisibility(inputId, iconElement) {
+            const passwordInput = document.getElementById(inputId);
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                iconElement.classList.remove("fa-eye");
+                iconElement.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                iconElement.classList.remove("fa-eye-slash");
+                iconElement.classList.add("fa-eye");
+            }
+        }
+
+        // Function to validate date of birth
+        function validateDOB() {
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            if (!day || !month || !year) {
+                return false;
+            }
+            
+            // Validate day (1-31)
+            if (day < 1 || day > 31) {
+                return false;
+            }
+            
+            // Validate month (1-12)
+            if (month < 1 || month > 12) {
+                return false;
+            }
+            
+            // Validate year (reasonable range)
+            const currentYear = new Date().getFullYear();
+            if (year < 1900 || year > currentYear) {
+                return false;
+            }
+            
+            const birthDate = new Date(year, month - 1, day);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age >= 13;
+        }
+
+        // Function to validate profile step
+        function validateProfileStep(event) {
+            event.preventDefault();
+            console.log('Validating profile step');
+            
+            const nameInput = document.getElementById('name');
+            const dayInput = document.getElementById('day');
+            const monthInput = document.getElementById('month');
+            const yearInput = document.getElementById('year');
+            const genderInputs = document.querySelectorAll('input[name="gender"]:checked');
+            
+            const nameError = document.getElementById('nameError');
+            const dobError = document.getElementById('dobError');
+            const genderError = document.getElementById('genderError');
+            
+            let isValid = true;
+
+            // Reset error states
+            nameInput.classList.remove('error-border');
+            dayInput.classList.remove('error-border');
+            monthInput.classList.remove('error-border');
+            yearInput.classList.remove('error-border');
+            nameError.textContent = '';
+            dobError.textContent = '';
+            genderError.textContent = '';
+
+            // Validate name
+            if (!nameInput.value) {
+                nameInput.classList.add('error-border');
+                nameError.textContent = 'Please enter your name';
+                isValid = false;
+            }
+
+            // Validate date of birth
+            if (!dayInput.value || !monthInput.value || !yearInput.value) {
+                dayInput.classList.add('error-border');
+                monthInput.classList.add('error-border');
+                yearInput.classList.add('error-border');
+                dobError.textContent = 'Please enter your complete date of birth';
+                isValid = false;
+            } else if (!validateDOB()) {
+                dayInput.classList.add('error-border');
+                monthInput.classList.add('error-border');
+                yearInput.classList.add('error-border');
+                dobError.textContent = 'You must be at least 13 years old to sign up';
+                isValid = false;
+            }
+
+            // Validate gender
+            if (genderInputs.length === 0) {
+                genderError.textContent = 'Please select a gender option';
+                isValid = false;
+            }
+
+            if (isValid) {
+                document.getElementById('step3-spinner').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('step3-spinner').style.display = 'none';
+                    nextStep(4);
+                }, 800);
+            }
+        }
+
+        // Function to submit the form
+        function submitForm() {
+            console.log('Submitting form');
+            document.getElementById('step4-spinner').style.display = 'block';
+            
+            // Here you would normally submit the form data to your server
+            setTimeout(() => {
+                document.getElementById('step4-spinner').style.display = 'none';
+                alert('Account created successfully!');
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+
+        // Initialize form when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            // Add event listeners for social login buttons
+            document.querySelectorAll('.social-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const provider = this.querySelector('i').className.split(' ')[1].split('-')[1];
+                    alert(`Redirecting to ${provider} authentication`);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

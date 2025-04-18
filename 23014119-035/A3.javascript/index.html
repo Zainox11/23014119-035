@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify-Web Player: Music for everyone</title>
+    <link rel="icon" href="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="Javascript/utilities.js"></script>
+    <script src="Javascript/index.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1DB954',
+                        'spotify-dark': '#121212',
+                        'spotify-light-dark': '#181818',
+                        'spotify-gray': '#535353',
+                        'spotify-light-gray': '#B3B3B3',
+                        'spotify-pink': '#AE2896',
+                        'spotify-blue': '#509BF5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: transparent;
+            border-radius: 4px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            background-color: #535353;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        .loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #1DB954;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Mobile Menu Styles */
+        #mobileMenu {
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobileMenu.open {
+            max-height: 500px;
+        }
+        #mobileMenu ul li {
+            border-bottom: 1px solid #535353;
+        }
+        #mobileMenu ul li a {
+            transition: color 0.2s ease;
+        }
+        #mobileMenu ul li a:hover {
+            color: #1DB954;
+        }
+        /* Mobile Header Adjustments */
+        @media (max-width: 767px) {
+    .bg-dark { /* Changed from .bg-[#030303] */
+        padding: 12px 16px;
+    }
+    
+    #mobileMenuButton {
+        width: 32px;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .mobile-auth-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .mobile-auth-buttons a {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .mobile-auth-buttons .auth-link {
+        color: #838181;
+        font-weight: 600;
+        text-decoration: none;
+        -webkit-transition: color 0.2s ease;
+        transition: color 0.2s ease;
+    }
+    
+    .mobile-auth-buttons .auth-link:hover {
+        color: white;
+    }
+    
+    .mobile-auth-buttons .signup-btn {
+        background-color: white;
+        color: black;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        -webkit-transition: background-color 0.2s ease;
+        transition: background-color 0.2s ease;
+    }
+    
+    .mobile-auth-buttons .signup-btn:hover {
+        background-color: rgba(243, 243, 243, 0.56);
+    }
+}
+        /* Play Button Styles */
+        .play-button-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .play-button {
+            position: absolute;
+            right: 10px;
+            bottom: 20px;
+            background-color: #1DB954;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .group:hover .play-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .play-button i {
+            color: black;
+            font-size: 14px;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+
+<body class="bg-black font-sans">
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-[#030303] p-4 flex items-center justify-between sticky top-0 z-50">
+        <button id="mobileMenuButton" class="text-white">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        <img src="Images/logo-new.png" alt="Spotify" class="h-8">
+        <div class="flex items-center space-x-4">
+            <a href="signup.html" class="text-[#838181] text-sm font-semibold no-underline hover:text-white">Sign Up</a>
+            <a href="login.html" class="text-black text-sm font-semibold bg-white py-1.5 px-4 rounded-full no-underline hover:bg-[#f3f3f38f]">Login</a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden bg-[#121111] w-full fixed top-20 left-0 z-40">
+        <ul class="list-none p-4">
+            <li class="py-3">
+                <a href="#" class="flex items-center text-white">
+                    <i class="fa-solid fa-house mr-3"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="py-3">
+                <a href="#" class="flex items-center text-white">
+                    <i class="fa-solid fa-magnifying-glass mr-3"></i>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li class="py-3">
+                <a href="#" class="flex items-center text-white">
+                    <i class="fa-solid fa-book mr-3"></i>
+                    <span>Your Library</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed top-0 left-0 bottom-0 w-[300px] bg-[#1d1c1c21] md:block hidden custom-scrollbar">
+        <div class="bg-[#121111] rounded-lg p-5 m-2">
+            <div class="w-[120px]">
+                <a href=""><img src="Images/logo-new.png" alt="" class="w-full"></a>
+            </div>
+            <ul class="list-none">
+                <li class="p-[10px_20px]">
+                    <a href="" class="no-underline text-[#b3b3b3] text-base font-semibold hover:text-white">
+                        <span><i class="fa-solid fa-house text-xl mr-2.5"></i></span>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="p-[10px_20px]">
+                    <a href="" class="no-underline text-[#b3b3b3] text-base font-semibold hover:text-white">
+                        <span><i class="fa-solid fa-magnifying-glass text-xl mr-2.5"></i></span>
+                        <span>Search</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="bg-[#121111] rounded-lg p-5 m-2 h-[calc(100vh-240px)] flex flex-col">
+            <ul class="list-none">
+                <li class="p-[10px_20px]">
+                    <a href="" class="no-underline text-[#b3b3b3] text-base font-semibold hover:text-white">
+                        <span><i class="fa-solid fa-book text-xl mr-2.5"></i></span>
+                        <span class="relative after:content-['+'] after:float-right after:text-center after:rounded-full after:text-sm">Your Library</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="custom-scrollbar overflow-y-auto flex-1">
+                <div class="bg-[#302f2f] p-[30px_15px] rounded-lg mb-2.5">
+                    <h4 class="text-white text-sm">Create Your First Playlist</h4>
+                    <p class="text-white text-xs my-3">It's easy, we'll help you</p>
+                    <button class="py-2 px-4 border-0 outline-0 rounded-full font-semibold bg-white hover:bg-gray-200">
+                        Create Playlist
+                    </button>
+                </div>
+                <div class="bg-[#302f2f] p-[30px_15px] rounded-lg mb-2.5">
+                    <h4 class="text-white text-sm">Let's find some podcasts to follow</h4>
+                    <p class="text-white text-xs my-3">We'll keep you updated on new episodes</p>
+                    <button class="py-2 px-4 border-0 outline-0 rounded-full font-semibold bg-white hover:bg-gray-200">
+                        Browse podcasts
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-auto">
+                <div class="mt-2.5">
+                    <ul class="list-none">
+                        <li class="p-0 px-3 pb-2 whitespace-nowrap">
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">Legal</a>
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">Safety & Privacy</a>
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">Privacy Policy</a>
+                        </li>
+                        <li class="p-0 px-3 pb-2 whitespace-nowrap">
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">Cookies</a>
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">AboutAds</a>
+                            <a href="" class="no-underline text-[#818080] text-xs font-semibold mx-1.5 hover:underline">Accessibility</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex justify-center mt-4 mb-2">
+                    <button class="px-4 py-2 border border-[#818080] rounded-full text-white text-sm flex items-center hover:bg-[#333] transition-colors">
+                        <i class="fas fa-globe mr-2"></i>
+                        <span>English</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-[300px] ml-0 bg-[#181818] h-screen overflow-y-auto custom-scrollbar pb-[90px]">
+        <!-- Desktop Header -->
+        <div class="p-[25px_30px] bg-[#030303] flex items-center justify-between sticky top-0 z-10 md:flex hidden">
+            <div>
+                <button class="bg-transparent border-0 outline-0">
+                    <i class="text-[#838181] text-xl mr-5 hover:text-[#f3f3f3] fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="bg-transparent border-0 outline-0">
+                    <i class="text-[#838181] text-xl mr-5 hover:text-[#f3f3f3] fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="flex items-center">
+                <button class="bg-transparent border-0 p-0 m-0 cursor-pointer">
+                    <a href="signup.html" class="text-[#838181] text-base font-semibold mr-6 no-underline hover:text-white">Sign Up</a>
+                </button>
+                <button class="bg-transparent border-0 p-0 m-0 cursor-pointer">
+                    <a href="login.html" class="text-black text-base font-semibold bg-white py-2.5 px-5 rounded-full no-underline inline-block hover:bg-[#f3f3f38f]">Login</a>
+                </button>
+            </div>
+        </div>
+
+        <!-- Popular Album -->
+        <div class="p-5 pl-10">
+            <h2 class="text-white text-xl mb-5">Popular Album</h2>
+            <div class="flex gap-5 overflow-x-auto pb-4 custom-scrollbar">
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-6.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">ANIMAL</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">Manan Bhardwaj, Vishal Mishra, Jaani</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-7.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Still Rollin</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">Shubh</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-8.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Husn</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">Anuv Jain</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-9.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Moosetape</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">Sidhu Moose Wala</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-10.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Satranga</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">Arijit Singh, Shreyas Puranik, Siddarth-Garima</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Playlists -->
+        <div class="p-5 pl-10">
+            <h2 class="text-white text-xl mb-5">Popular Playlists</h2>
+            <div class="flex gap-5 overflow-x-auto pb-4 custom-scrollbar">
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-1.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">lofi beats</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">By Spotify</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-2.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Todays Top Hits</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">By Spotify</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-3.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Chillout Lounge</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">By Spotify</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-4.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">All Out 2020s</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">By Spotify</p>
+                </div>
+                <div class="w-[190px] min-w-[140px] bg-[#272626] cursor-pointer rounded-md p-3.5 hover:bg-[#3d3c3c] group">
+                    <div class="relative">
+                        <img src="Images/item-5.jpg" alt="" class="w-full rounded-md mb-2.5">
+                        <div class="play-button-container">
+                            <div class="play-button">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-white">Jazz in the Background</h4>
+                    <p class="text-[#8f8e8e] text-xs mt-2.5 hover:underline">By Spotify</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-5 pl-10">
+            <div class="flex flex-col md:flex-row justify-between mt-10">
+                <div class="flex flex-col md:flex-row justify-between gap-12 mb-6 md:mb-0">
+                    <div class="mx-3">
+                        <div class="text-white font-semibold mb-3 text-base">Company</div>
+                        <ul class="list-none">
+                            <li class="my-1.5"><a href="about.html" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">About</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Jobs</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">For the Record</a></li>
+                        </ul>
+                    </div>
+                    <div class="mx-3">
+                        <div class="text-white font-semibold mb-3 text-base">Communities</div>
+                        <ul class="list-none">
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">For Artists</a></li>
+                            <li class="my-1.5"><a href="developer.html" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Developers</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Advertising</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Investors</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Vendors</a></li>
+                        </ul>
+                    </div>
+                    <div class="mx-3">
+                        <div class="text-white font-semibold mb-3 text-base">Useful links</div>
+                        <ul class="list-none">
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Support</a></li>
+                            <li class="my-1.5"><a href="" class="no-underline text-[#969393] text-sm cursor-pointer hover:underline hover:text-white">Free Mobile App</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex justify-end md:justify-start">
+                    <div>
+                        <i class="text-white bg-[#353434] p-3 rounded-full mx-1.5 cursor-pointer hover:bg-[#636262] fa-brands fa-instagram"></i>
+                        <i class="text-white bg-[#353434] p-3 rounded-full mx-1.5 cursor-pointer hover:bg-[#636262] fa-brands fa-x-twitter"></i>
+                        <i class="text-white bg-[#353434] p-3 rounded-full mx-1.5 cursor-pointer hover:bg-[#636262] fa-brands fa-facebook"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="my-5 mx-10 border-0 outline-0 border border-[#575656] mt-10">
+        <div>
+            <p class="text-[#969393] text-sm mb-7.5 px-10">&copy; 2025 Spotify AB</p>
+        </div>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 px-10 flex justify-between items-center bg-gradient-to-r from-[#ae2896] to-[#509bf5]">
+        <div class="flex-1">
+            <h4 class="text-sm font-semibold mb-1 text-white">Preview of Spotify</h4>
+            <p class="text-base font-normal text-white">Sign up to get unlimited songs and podcasts with the occasional ads. No credit card needed.</p>
+        </div>
+        <div>
+            <button class="bg-white text-black py-3 px-8 border-0 outline-0 rounded-full text-sm font-bold hover:scale-105 transition-transform">
+                <a href="signup.html" class="no-underline text-inherit">Sign Up Free</a>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

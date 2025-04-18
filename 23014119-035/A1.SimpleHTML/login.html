@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in to Spotify</title>
+    <link rel="icon" href="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="index.html">
+    <link rel="stylesheet" href="StyleFolder/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Log in to Spotify</h1>
+        
+        <div class="social-login">
+            <a href="#" class="social-btn">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-facebook"></i>
+                Continue with Facebook
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-apple"></i>
+                Continue with Apple
+            </a>
+        </div>
+        
+        <div class="divider">or</div>
+        
+        <form>
+            <div class="form-group">
+                <label for="email">Email or username</label>
+                <input type="email" id="email" name="email" placeholder="Enter Email or Username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter Your Password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Log in</button>
+            
+            <a href="#" class="forgot-password">Forgot your password?</a>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="signup.html">Sign up for Spotify.</a>
+        </div>
+    </div>
+</body>
+</html>
